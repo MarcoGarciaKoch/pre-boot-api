@@ -10,8 +10,8 @@ export const sendValidationEmail = async (to, url) => {
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'apppreboot@gmail.com', // generated ethereal user
-      pass: 'fntccavhhyqeaxky', // generated ethereal password
+      user: process.env.NODEMAILER_AUTH_USER, // generated gmail user
+      pass: process.env.NODEMAILER_AUTH_PASSWORD // generated gmail password
     },
   });
 

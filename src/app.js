@@ -13,6 +13,11 @@ app.get('/ping', (_req,res) => res.send('pong')); // ping to ensure that express
 app.use('/auth', authRouter); // Declare authetication router
 app.use('/users', validateAuth, userRouter);
 
+
+app.get('/hello', (_req,res) => {
+    res.send(`Hello World desde express: ${process.env.DEMO_MY_VAR}`);
+})
+
 // app.get('/demo',(req,res,next) => {
 //     const cumpleValidacion = true;
 //     if(!cumpleValidacion){

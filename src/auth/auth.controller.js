@@ -21,7 +21,6 @@ export const registerCtrl = async (req, res) => {
             await req.app.locals.ddbbClient.usersCol.insertOne({ ...req.body, status: 'PENDING_VALIDATION' }); //Step 2
             //Step 3
             const token = generateValidationToken();
-            console.log(`token: ${token}`);
             await req.app.locals.ddbbClient.tokenCol.insertOne({token, user: req.body.email});
             //step 4
             // Be aware, host is our react app

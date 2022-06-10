@@ -1,10 +1,12 @@
 import { MongoClient } from 'mongodb';
 import { app } from "./app.js";
-import dotenv from "dotenv";
+import 'dotenv/config';
 
-dotenv.config();
+// process.env.PORT indicates to Heroku where to run in the destiniy server.
+// Otherwise, the server will be run in the local host 4000
+const port = process.env.PORT || 4000; 
 
-const client = new MongoClient(process.env.REACT_APP_MONGOPASSWORD);
+const client = new MongoClient(process.env.REACT_APP_MONGOURI);
 
 async function start() {
     try{
@@ -15,7 +17,7 @@ async function start() {
             tokenCol: db.collection('validate-token'),
             client: client
         }; //2. Save it in Locals to access from routes
-        app.listen(4000, () => console.log('Server running on 4000'));
+        app.listen(port, () => console.log(`🔥Server running on port ${port}🔥`));
     }catch(err){
         console.err('Error on server: ', err);
     }
