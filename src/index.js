@@ -15,6 +15,9 @@ async function start() {
         app.locals.ddbbClient = {
             usersCol: db.collection('users'),
             tokenCol: db.collection('validate-token'),
+            potentialClientCol: db.collection('schools'),
+            earlyStudentsCol: db.collection('early-students'),
+            coursesCol: db.collection('courses'),
             client: client
         }; //2. Save it in Locals to access from routes
         app.listen(port, () => console.log(`🔥Server running on port ${port}🔥`));
