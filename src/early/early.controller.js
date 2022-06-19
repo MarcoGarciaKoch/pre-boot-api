@@ -42,19 +42,18 @@ export const registerEarlyStudent = async (req, res) => {
 export const getCourses = async (req, res) => { 
     try{
         //get email from query params
-        const email = req.query;
+        const {email} = req.query;
         //get school ID from school collection
-        const school = await req.app.locals.ddbbClient.potentialClientCol.findOne({email: email});
+        const school = await req.app.locals.ddbbClient.potentialClientCol.findOne({email});
         if(school !== null) {
             //get school id from the document received before
             const schoolID = school._id
             //get courses from school collection by school ID
             const courses = await req.app.locals.ddbbClient.coursesCol.find({schoolID: schoolID}).toArray();
-            console.log(courses)
             res.json(courses);
         }else{
             // send error 409(conflict) because user already exists on DDBB.
-            res.sendStatus(409);
+            res.sendStatus(404);
         }
     }catch (err){
         console.error(err);

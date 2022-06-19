@@ -26,9 +26,20 @@ import { encodePassword } from './potentialClient.utils.js';
              //Step 3
             await req.app.locals.ddbbClient.coursesCol.insertOne({ 
                 schoolID: schoolID.insertedId,
-                name: 'Full Stack Web Development',
+                name: 'JavaScript',
                 students: [],
-                resources: 'All the resources needed for the course'
+                lessons: [
+                    {order: 1, id:'72b132dc-074a-4ec3-88bb-75ac42a6e96f', title: 'Introduccion a JavaScript', tests:''},
+                    {order: 2, id:'89341f08-2fc6-4b27-a59c-577b17eedb9b', title: 'Variables y tipos de datos', tests:''},
+                    {order: 3, id:'ea5cb501-42d9-4af6-928d-627cf06a742f', title: 'Expresiones y operadores', tests:''},
+                    {order: 4, id:'2d529303-7781-4ffc-89d7-8eac3443d122', title: 'Sentencias condicionales', tests:''},
+                    {order: 5, id:'aa2157d3-f71d-4ad8-b6a8-999cfb1e3be2', title: 'Funciones de Strings', tests:''},
+                    {order: 6, id:'27b1bdaf-7dcd-4be5-bd35-6323c3f03f0c', title: 'Bucles', tests:''},
+                    {order: 7, id:'197795a3-26ff-49ea-82f7-01a0922259a3', title: 'Arrays', tests:''},
+                    {order: 8, id:'3258fe3e-f8bc-4490-821d-2dc682912d38', title: 'Métodos de Arrays', tests:''},
+                    {order: 9, id:'ced7e9da-0d77-40bf-b489-a6dbb43fa3b5', title: 'Funciones', tests:''},
+                    {order: 10, id:'8d9f80e3-bc16-4262-bd2f-2a2307530e32', title: 'Objetos', tests:''}
+                ]
                  });
             res.sendStatus(201);
         }else{

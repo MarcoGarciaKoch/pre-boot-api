@@ -2,8 +2,7 @@ import jwt from 'jsonwebtoken';
 import { encodePassword, generateValidationToken } from './auth.utils.js';
 import { sendValidationEmail } from '../adapters/email.js';
 import { jwt_secret } from './auth.secrets.js';
-
-
+import { ObjectId } from "mongodb";
 
 /**
  * Check data comes in the body and update early student info. 
@@ -15,28 +14,24 @@ import { jwt_secret } from './auth.secrets.js';
 
 export const validateEarlyStudent = async (req, res) => {
     const { token } = req.query; // step 1
-    console.log(token)
     try{
         //Check that token already exists on DDBB - pre-boot, collection - earlyStudentsCol.
         //Otherwise, send an error.
         const valToken = await req.app.locals.ddbbClient.earlyStudentsCol.findOne({token})
-        console.log(valToken)
         //token exists
         if(valToken !== null && valToken.role === 'student') {
             // step 2
             const { email, course } = valToken; 
-            console.log(email)
-            console.log(course)
+            const o_id = ObjectId(course);
             // step 3
-            const courseToAddStudent = await req.app.locals.ddbbClient.coursesCol.findOne(course);
-            console.log(courseToAddStudent)
+            const courseToAddStudent = await req.app.locals.ddbbClient.coursesCol.findOne({_id: o_id});
                 if(courseToAddStudent !== null) {
-                    await req.app.locals.ddbbClient.coursesCol.updateOne({course}, {$push: {students: email}});
+                    await req.app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, {$push: {students: email}});
                 }else{
                     res.status(400);
                 }
             //step 4
-            res.sendStatus(200).json({email, bootcamp:courseToAddStudent.name})
+            res.json({email, bootcamp:courseToAddStudent.name, courseId:courseToAddStudent._id})
         }else{
             res.sendStatus(404);
         }
@@ -96,14 +91,15 @@ export const validateEmailCtrl = async (req, res) => {
         if(valToken !== null) {
             //token exists
         const { user } = valToken;
-        const studentData = await req.app.locals.ddbbClient.earlyStudentsCol.findOne({user});
+        
+        const studentData = await req.app.locals.ddbbClient.earlyStudentsCol.findOne({email: user});
         await req.app.locals.ddbbClient.tokenCol.deleteOne({token}); // step 3
-        await req.app.locals.ddbbClient.earlyStudentsCol.deleteOne({user}); // step 3
+        await req.app.locals.ddbbClient.earlyStudentsCol.deleteOne({email: user}); // step 3
         //update the user status to SUCCESS
         const updateDoc = {
             $set: {
                 role: studentData.role,
-                course: {course: studentData.course, progress: 'start'},
+                course: {idCourse: studentData.course, progress: '72b132dc-074a-4ec3-88bb-75ac42a6e96f'},
                 status: 'SUCCESS'
             },
         };

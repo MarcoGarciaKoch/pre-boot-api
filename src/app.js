@@ -5,6 +5,7 @@ import userRouter from './users/users.router.js';
 import earlyRouter from './early/early.router.js';
 import potentialClientRouter from './potentialClient/potentialClient.router.js';
 import { validateAuth } from './auth/auth.middleware.js';
+import path from 'path';
 
 export const app = express();
 
@@ -16,6 +17,10 @@ app.use('/potentialclient', potentialClientRouter); // Declare the router for th
 app.use('/early', earlyRouter); // Declare the router for the early users')
 app.use('/auth', authRouter); // Declare authetication router
 app.use('/users', validateAuth, userRouter); // Declare user router
+
+app.use('/assets', express.static('assets'))
+
+
 
 
 app.get('/hello', (_req,res) => {
