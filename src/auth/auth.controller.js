@@ -99,7 +99,7 @@ export const validateEmailCtrl = async (req, res) => {
         const updateDoc = {
             $set: {
                 role: studentData.role,
-                course: {idCourse: studentData.course, progress: '72b132dc-074a-4ec3-88bb-75ac42a6e96f'},
+                course: {idCourse: studentData.course, progress: '72b132dc-074a-4ec3-88bb-75ac42a6e96f', order: 1},
                 status: 'SUCCESS'
             },
         };
