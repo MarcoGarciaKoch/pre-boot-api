@@ -1,9 +1,12 @@
 import express from "express";
 import { validateUser } from './auth.middleware.js';
-import { registerCtrl, validateEmailCtrl, loginCtrl } from './auth.controller.js';
+import { validateEarlyStudent, registerCtrl, validateEmailCtrl, loginCtrl } from './auth.controller.js';
 
 
 const router = express.Router();
+
+// endpoint validate early student and add it to the course
+router.get('/early-student/validate', validateEarlyStudent)
 
 // endpoint for user register
 router.post('/register', validateUser, registerCtrl);
