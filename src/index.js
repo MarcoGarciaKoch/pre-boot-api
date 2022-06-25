@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 import { app } from "./app.js";
+import { server } from "./app.js"
 import 'dotenv/config';
 
 // process.env.PORT indicates to Heroku where to run in the destiniy server.
@@ -20,7 +21,7 @@ async function start() {
             coursesCol: db.collection('courses'),
             client: client
         }; //2. Save it in Locals to access from routes
-        app.listen(port, () => console.log(`🔥Server running on port ${port}🔥`));
+        server.listen(port, () => console.log(`🔥Server running on port ${port}🔥`));
     }catch(err){
         console.err('Error on server: ', err);
     }
