@@ -1,13 +1,23 @@
 import express from "express";
 import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
 import authRouter from './auth/auth.router.js';
 import userRouter from './users/users.router.js';
 import earlyRouter from './early/early.router.js';
 import potentialClientRouter from './potentialClient/potentialClient.router.js';
 import { validateAuth } from './auth/auth.middleware.js';
-import path from 'path';
+import { ObjectId } from "mongodb";
+
 
 export const app = express();
+export const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:8100",
+        methods: ["GET", "POST"]
+      }
+});
 
 app.use(cors()); // Middleware to alows communication between front server and back server, ensuring some security.
 app.use(express.json()) //Middleware that reads the body (string in JSON format) and transforms into an JavaScript object.
@@ -18,9 +28,60 @@ app.use('/early', earlyRouter); // Declare the router for the early users')
 app.use('/auth', authRouter); // Declare authetication router
 app.use('/users', validateAuth, userRouter); // Declare user router
 
-app.use('/assets', express.static('assets'))
+app.use('/assets', express.static('assets'));
 
 
+
+io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usuario se conecta
+    console.log('a user connected');
+    app.locals.course = socket.handshake.query.courseId;
+    app.locals.email = socket.handshake.query.user;
+
+    const getChatInfo = async (courseId, email) => {
+        //call the user
+        try {
+            const course = courseId; // try to find the course by its ID
+            const o_id = ObjectId(course);
+            const updateDoc = {
+                $addToSet: {'chat.usersConected': email},
+            };
+            await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateDoc);
+            const chatOptions = { projection: {_id:0, chat:1} }
+            const chat = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, chatOptions);
+            console.log(chat)
+            return chat; // return all the users connected and messages together in the same object
+        }catch(err) {
+            console.error(err);
+            return 500;
+        }
+    }
+    const chatData = await getChatInfo(app.locals.course, app.locals.email)
+    io.emit('user conected', chatData); // Send to all conected students and chat data to both array of conected students and array of messages
+
+
+    socket.on('chat message', async (msg) => {
+        console.log('que es', msg)
+        const saveAndGetMessages = async messageDetails => {
+            try {
+                const o_id = ObjectId(messageDetails.courseId);
+                const updateDoc = {
+                    $set: {'chat.messages': {userEmail:messageDetails.email, message:messageDetails.body, type:'superchat'}},
+                };
+                await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateDoc);
+                const chatOptions = { projection: {_id:0, chat:1} }
+                const chat = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, chatOptions);
+                console.log(chat)
+                return chat; // return all the users connected and messages together in the same object
+            }catch(err) {
+                console.error(err);
+                return 500;
+            }
+        }
+        const chatData = await saveAndGetMessages(msg)
+        console.log('id',msg.senderId)
+        io.emit('chat message', {chatData, id:msg.senderId}); //Send to all conected student the list of messages and list of conected students
+      });
+})
 
 
 app.get('/hello', (_req,res) => {

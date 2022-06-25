@@ -28,6 +28,7 @@ import { encodePassword } from './potentialClient.utils.js';
                 schoolID: schoolID.insertedId,
                 name: 'JavaScript',
                 students: [],
+                chat: {usersConected: [], messages: []},
                 lessons: [
                     {order: 1, id:'72b132dc-074a-4ec3-88bb-75ac42a6e96f', title: 'Introduccion a JavaScript', tests:''},
                     {order: 2, id:'89341f08-2fc6-4b27-a59c-577b17eedb9b', title: 'Variables y tipos de datos', tests:''},
