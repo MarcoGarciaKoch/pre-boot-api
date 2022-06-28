@@ -14,7 +14,7 @@ export const app = express();
 export const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:8100",
+        origin: "http://localhost:8101",
         methods: ["GET", "POST"]
       }
 });
@@ -36,6 +36,12 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
     console.log('a user connected');
     app.locals.course = socket.handshake.query.courseId;
     app.locals.email = socket.handshake.query.user;
+    app.locals.socketId = socket.id;
+
+    const updateUser = {
+        $set: { socketId: app.locals.socketId}
+    };
+    await app.locals.ddbbClient.usersCol.updateOne({email:app.locals.email}, updateUser)
 
     const getChatInfo = async (courseId, email) => {
         //call the user
@@ -78,6 +84,18 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
         const chatData = await saveAndGetMessages(msg)
         io.emit('chat message', {chatData, id:msg.senderId}); //Send to all conected student the list of messages and list of conected students
       });
+
+      socket.on('disconnect', async () => {
+        console.log('user disconnected');
+        const userData = await app.locals.ddbbClient.usersCol.findOne({socketId: app.locals.socketId})
+        console.log('userData', userData)
+
+        const o_id = ObjectId(app.locals.course);
+        const updateUserConnectedList = {
+            $pull: {'chat.usersConected': app.locals.email  },
+        };
+        await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateUserConnectedList);
+      })
 })
 
 
