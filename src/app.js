@@ -91,8 +91,9 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
         console.log('userData', userData)
 
         const o_id = ObjectId(app.locals.course);
+        console.log('email',app.locals.email) 
         const updateUserConnectedList = {
-            $pull: {'chat.usersConected': app.locals.email  },
+            $pull: {'chat.usersConected': app.locals.email },
         };
         await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateUserConnectedList);
       })
