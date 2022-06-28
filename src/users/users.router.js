@@ -1,8 +1,10 @@
 import express from "express";
-import { getUserInfo } from './users.controller.js';
+import { getUserInfo, updateCurrentLesson } from './users.controller.js';
+
 
 const router = express.Router();
 
 router.get('/info', getUserInfo);
+router.patch('/nextLesson', updateCurrentLesson)
 
 export default router;

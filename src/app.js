@@ -28,8 +28,8 @@ app.use('/early', earlyRouter); // Declare the router for the early users')
 app.use('/auth', authRouter); // Declare authetication router
 app.use('/users', validateAuth, userRouter); // Declare user router
 
-app.use('/assets', express.static('assets'));
 
+app.use('/assets', express.static('assets'));
 
 
 io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usuario se conecta
@@ -48,7 +48,6 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
             await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateDoc);
             const chatOptions = { projection: {_id:0, chat:1} }
             const chat = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, chatOptions);
-            console.log(chat)
             return chat; // return all the users connected and messages together in the same object
         }catch(err) {
             console.error(err);
@@ -65,12 +64,11 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
             try {
                 const o_id = ObjectId(messageDetails.courseId);
                 const updateDoc = {
-                    $set: {'chat.messages': {userEmail:messageDetails.email, message:messageDetails.body, type:'superchat'}},
+                    $push: {'chat.messages': {userEmail:messageDetails.email, message:messageDetails.body, type:'superchat'}},
                 };
                 await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateDoc);
                 const chatOptions = { projection: {_id:0, chat:1} }
                 const chat = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, chatOptions);
-                console.log(chat)
                 return chat; // return all the users connected and messages together in the same object
             }catch(err) {
                 console.error(err);
@@ -78,7 +76,6 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
             }
         }
         const chatData = await saveAndGetMessages(msg)
-        console.log('id',msg.senderId)
         io.emit('chat message', {chatData, id:msg.senderId}); //Send to all conected student the list of messages and list of conected students
       });
 })
