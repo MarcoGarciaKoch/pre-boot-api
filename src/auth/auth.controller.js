@@ -91,6 +91,9 @@ export const validateEmailCtrl = async (req, res) => {
         if(valToken !== null) {
             //token exists
         const { user } = valToken;
+
+        const freeAvatars = ['Yeti', 'Fairy', 'Minotaur', 'Madremonte', 'Devil', 'Aphrodite', 'Bigfoot', 'Cyclops'];
+        const userAvatar = Math.floor(Math.random() * (8 - 1 + 1) +1)
         
         const studentData = await req.app.locals.ddbbClient.earlyStudentsCol.findOne({email: user});
         await req.app.locals.ddbbClient.tokenCol.deleteOne({token}); // step 3
@@ -100,6 +103,7 @@ export const validateEmailCtrl = async (req, res) => {
             $set: {
                 role: studentData.role,
                 course: {idCourse: studentData.course, progress: '72b132dc-074a-4ec3-88bb-75ac42a6e96f', order: 1},
+                avatar: freeAvatars[userAvatar],
                 status: 'SUCCESS'
             },
         };

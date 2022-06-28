@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 
-
 export const sendInviteEmail = async (to, url) => {
     // Only needed if you don't have a real mail account for testing
   // const testAccount = await nodemailer.createTestAccount();
@@ -147,7 +146,7 @@ export const sendInviteEmail = async (to, url) => {
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
               <tr>
                 <td align="center" valign="top" style="padding: 36px 24px;">
-                  <a href="https://cdn-icons.flaticon.com/png/512/2115/premium/2115955.png?token=exp=1655227792~hmac=b2b7bf03bfe3b698d0b1b8be51e6cadf" target="_blank" style="display: inline-block;">
+                  <a href="https://cdn-icons.flaticon.com/png/512/2115/premium/2115955.png?token=exp=1656241829~hmac=190a67592012e53123dc411982cf73a4" target="_blank" style="display: inline-block;">
                     <img src="./img/paste-logo-light@2x.png" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
                   </a>
                 </td>

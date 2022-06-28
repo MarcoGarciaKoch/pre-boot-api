@@ -28,7 +28,8 @@ export const validateAuth = (req, res, next) => {
     try{
         //Obtain the email from token
         const auth = req.header('Authorization'); // it returns the header value
-        // Whay is the header structure? --> Bearer _token_jwt_
+        console.log('auth', auth)
+        // What is the header structure? --> Bearer _token_jwt_
         const token = auth.split(' ')[1]; // obtains the token
         const payload = jwt.verify(token, jwt_secret);
         //add attribute to request
@@ -36,7 +37,7 @@ export const validateAuth = (req, res, next) => {
         next();
     }catch(err){
         //The token is invalid or it does not exists
-        console.err(err);
+        console.error(err);
         res.sendStatus(401);
     }
 }

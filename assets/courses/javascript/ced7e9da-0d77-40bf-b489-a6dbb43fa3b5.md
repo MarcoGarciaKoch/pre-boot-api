@@ -1,108 +1,247 @@
-# Funciones
+# Métodos de arrays.
 
-Es un elemento de la programación o técnica, que nos ayuda a reutilizar una acción u operación de nuestro código.
+Podemos hacer operaciones con listas como por ejemplo buscar un elemento 
+en un array.
 
-Podemos verlo como una plantilla en el código. Son un bloque de instrucciones a los que le doy un alias (nombre) y que cada vez que quiera ejecutar esas instrucciones, simplemente llamo al alias.
-
-**Las funciones deben PODER ejecturarse de manera independiente sin depender de variables de fuera. Se pasa todo por parámetros**
-
-## ¿Cómo se crean funciones?
-
-Hay varias maneras de declararlas. 
-- Declarando la función
-- Asignadola a una varible
-- Función flecha
-- Función anónima
+[Enlace a los métodos de array.](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array)
 
 ```js
-function _alias_(_parametro-1_ , _parametro-2_ , ...) {
-    /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-    return _parametro_de_salida
+const arr = [5, 2, 33, 1, 2, 3];
+
+/**
+ * Entrada: 1 array de números y un numéro a encontrar dentro el array
+ * Salida: booleano dicieno true si lo ha encontrado y false si no lo ha hecho
+ */
+function some(arr, n) {
+  let found = false; // inicialmente supongo que NO he encontrado el elemento
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === n) {
+      found = true;
+    } // siempre es true si ha sido true en algún momento
+    /*
+        * Opcion con ternario: found = arr[i] === n ? true : found;
+        * Optimización con expresiones booleanas y de asignación. Nos ahorramos
+        * la expresion condicional.
+            found ||= arr[i] === n;
+        */
+  }
+  return found;
 }
 
+some(arr, 5); // true, ya que 5 existe en el arr
+some(arr, 9); // false, ya que 9 existe en el arr
 
-const _alias_ = function(_parametro-1_ , _parametro-2_ , ...) {
-    /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-    return _parametro_de_salida
+/**
+ * Entrada: 1 Array de números
+ * Salida: 1 array con solo los números pares
+ */
+function filterEven(arr) {
+  const arrFiltered = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] % 2 === 0) {
+      // si encuentro el número par
+      arrFiltered[arrFiltered.length] = arr[i];
+    }
+  }
+  return arrFiltered;
 }
 
-/* ARROW FUNCTION */
-// son equivalentes salvo por un concepto que veremos en el futuro (this)
+// arr = [5,2,33,1,2,3]
+filterEven(arr); // devuelve [2,2]
+```
 
-const _alias_ = (_param1_ , _param2) => {
-    /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-    return _parametro_de_salida
-}
+Existen unas funciones predefinidas que te ayudan a trabajar con listas de datos:
 
-//Si el número de parámetros de entrada es === 1 entonces se pueden eliminar los paréntesis
+Estas modifican el array sobre el que estoy ejecutando la operación.
 
-const _alias_ = _param1_ => {
-    /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-    return _parametro_de_salida
-}
+- **push(elemento, ...)**: Añade al final del array el elemento que pasamos como 
+parámetro de entrada. Devuelve la nueva longitud del array.
+- **pop()**: Elimina el último elemento del array, devolviendo ese elemento.
+- **shift()**: Elimina el primer elemento del array, devolviendo ese elemento.
+- **unshift(elemento, ...)**: añade el elemento al principio del array. Devuelve 
+la nueva longitud del array.
 
-// Si el bloque de código solo tiene una instrucción entonces podemos eliminar las llaves
+Otras:
 
-const _alias_ = _param1_ => INSTRUCCION // Lo que devuelve se considera return
+- **concat**: junta dos arrays generando un nuevo array (no modifica el array original),
+ con la union de los dos arrays
+- **join**: Permite generar un string con la union de los elementos de una array. Además
+ permite especificar el caracter separador de esa unión.
 
+## Functiones con predicados:
 
-//OTROS TIPOS DE FUNCIONES
+Todas las funciones que vamos a ver ahora tienen como característica que su parámetro 
+de entrada es de tipo función y representa un predicado.
 
-// funciones anónimas ==> que no la puedo llamar en ningún otro lado. 
-// Es muy util para funciones que son parámetros de entrada de otra funcion
-function(_param_1_, _param_2_){
-    /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-}
+`¿Que estructura general tienen los predicados?`
 
-(_param1_ , _param2_) => {
-    /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-}
+Es una función que recibe 3 parámetros de entrada:
 
-// IIFE ==> funciones autollamadas
-(function (_param_1_, _param_2_) {
-  /* BLOQUE DE CODIGO QUE EJECUTA LA FUNCION */
-})(_valor_1, _valor_2);
+- **value**: Representa el elemento actual que esta recorriendo el array, 
+nuestro arr[i] en el for.
+- **index**: Representa la posición del array que se está recorriendo, 
+nuestra i en el for.
+- **arr**: Representa todo el array que estamos recorriendo.
+
+El objetivo de estas funciones es eliminar los bucles que haríamos nosotros 
+a mano. Esos bucles lo harán internamente las funciones de los arrays por nosotros.
+
+Estas funciones lo que hacen es recorrer el array posicion por posicion, 
+ejecutando una operación.
+
+- **function `some`**: devuelve true si hay algún elemento que cumple el predicado.
+
+```js
+
+const arr = ["hola", "adios"];
+const isBye = (v) => v === "adios";
+arr.some(isBye); // devuelve true
+
+arr.some((v) => v === "adios"); /* devuelve true. Porque hay un elemento que 
+es igual a 'adios' */
+arr.some((v) => v.length > 5); /* devuelve false, porque no hay ningun elemento 
+en la lista que tiene una longitud mayor estricto que 5 */
+arr.some((v) => v.length % 2 === 0); // devuelve true, porque la longitud de 'hola' es par
 
 ```
 
-**Los paramentros de entrada pueden ser de cualquier tipo de datos que hemos visto o de los que veremos en el futuro**
+- **function `every`**: todos los elementos del array deben cumplir la condicion. 
+Sino devuelve false.
 
 ```js
-function suma(a,b) { // defino las variables que quiero sumar, que las tiene que meter quien USE la función
-    return a+b; // esta función estaría devolvien la suma de lo que val a + lo que valga b
+
+const arr = [4, 6, 8, 10];
+
+arr.every((v) => v > 2); // true, ya que todos los elementos del array son mayores que 2
+arr.every((v) => v < 8); // false, ya que 8 y 10 no cumplen la condicion
+
+arr.every((v) => v % 2 === 0); // true, ya que todos los elementos son pares
+
+//¿Todos los elementos de mi array que estén en una posición par son mayores o iguales que 4?
+arr.every((v, i) => i % 2 === 1 || (i % 2 === 0 && v >= 4)); /* true. en las posiciones pares
+todos son mayores o iguales que 4. Tenemos que devolver true tambien en la posiciones impares */
+// optimización utilizando Algebra de Boole = arr.every((v,i) => i%2===1 || v>=4);
+
+/**
+ * Como lo haríamos sin la funcion. Por ejemplo: arr.every(v => v<8);
+ */
+
+let allLessEight = true;
+for (let i = 0; i < arr.length; i++) {
+  if (arr[i] >= 8) {
+    allLessEight = false;
+  }
+  // optimización allLessEight &&= arr[i]<8
 }
 
-function greeting(name){
-    return `Hello ${name}`;
-}
-
-greeting('Alex'); // devuelve 'Hello Alex'
-greeting('Bootcamp'); // devuelve 'Hello Bootcamp'
-const r = greeting('Luis'); // 
-
-const greeting = name => `Hello ${name}`; // sin llaves la instrucción que pongamos es la que devuelve la función
-greeting('Marco'); // devuelve 'Hello Marco'
 ```
 
-## ¿Cómo se llaman a las funciones?
+- El `forEach` es la sustitución de un for. Basicamente recorre cada elemento del for 
+y nos lo da en una función con su v, i, arr para que podamos modificarlo.
 
-Tenemos que utilizar su alias, abriendo y cerrando paréntesis y separando por `,` , los VALORES de los parámetros de entrada.
+Devuelve siempre **undefined**.
 
 ```js
-const n = parseInt('1233434');
 
-isNan(1233434); // Boolean 
+[1, 2, 3].forEach((v, i, arr) => {
+  console.log(v); // pintamos por consola cada elemento
+});
 
-
-suma(4,7); //  number --> 11
-suma(4+5, 9); // number --> 18
-
-const a = 10%5;
-suma(8,a); // number --> 8
-
-suma(8/0, 33); // number --> Infinity
-
-const msg = 'hello';
-suma(msg*3, msg+6); // string --> NaN , hello6 --> 'Nanhello6'
+// quiero pintar la potencia de dos de cada elemento de un array
+const arr = [1, 4, 2, 7];
+/* version for
+for(let i =0; i<arr.length; i++){
+    console.log(arr[i]**2);
+}
+*/
+arr.forEach((v) => console.log(v ** 2)); // no devuelve nada
 ```
 
+- El `map` es como un forEach pero genera un nuevo array con lo que devolvamos en la función.
+Este array no ES el original pero si tiene la MISMA length que el original.
+
+El caso de uso es la transformación de todos los elementos de una array en un nuevo array.
+
+```js
+
+/** DADO UN ARRAY DE NUMEROS GENERAR UN NUEVO ARRAY CON LA POTENCIA DE 2 DE CADA ELEMENTO */
+const arr = [1, 4, 2, 7];
+const newArr = arr.map((v) => v ** 2); // newArray = [1,16,4,49]; arr se queda como estaba
+
+```
+
+- `sort` ordena los elementos de un array utilizando una función de comparación.
+
+Esta función recibe dos elementos del array que llamaremos `a` y `b`. El objetivo es:
+
+  - Si queremos que el elemento `a` esté despues que `b` devolveremos un número positivo.
+  - Si queremos que el elemento `a` esté antes que `b` devolveremos un número negativo
+  - Si queremos que `a` mantenga el orden original con `b` devolvemos un 0
+
+MODIFICA EL ARRAY ORIGINAL.
+
+```js
+
+/* si quisiesemos ordenar un array de números ascendente (de menor a mayor), 
+nuestra funcion de comparación tendrá que ser la siguiente: */
+
+[1,20,2,10,4,3].sort((a,b) => {
+    if(a>b) return 1; // queremos que a esté desùes que b, ya que es mayor
+    if(a<b) return -1; // queremos que a esté antes que b, ya que es menor
+    return 0; // a===b entonces que mantenga el orden original
+});
+
+// esto realmente se puede optimizar. 
+[1,20,2,10,4,3].sort((a,b) => a-b);
+
+
+/* si quisiesemos ordenar un array de números descendente (de mayor a menor), 
+nuestra funcion de comparación tendrá que ser la siguiente: */
+
+[1,20,2,10,4,3].sort((a,b) => {
+    if(a>b) return -1; // queremos que a esté antes que b, ya que es mayor
+    if(a<b) return 1; // queremos que a esté despues que b, ya que es menor
+    return 0; // a===b entonces que mantenga el orden original
+});
+
+// esto realmente se puede optimizar. 
+[1,20,2,10,4,3].sort((a,b) => b-a);
+
+// ejemplo de boolean. Priemro quiero los true y luego los false
+const arr = [true,false, false, true, true, false, true];
+arr.sort((a,b) => {
+    if(a && !b) return -1;
+    if((a && b) || (!a && !b)) return 0;
+    return 1;
+});
+
+// optimizando
+arr.sort((a,b) => b-a);
+
+
+// ejemplo con strings ordentando por longitud de string
+const arr = ['hola', 'adios', 'bootcamp', 'demo']
+arr.sort((a,b) => {
+    if(a.length > b.length) return 1;
+    if(a.length < b.length) return -1;
+    return 0
+});
+
+// optimizando
+arr.sort((a,b) => a.length - b.length);
+
+
+/* podemos combinar varios criterios de ordenación. 
+Por ejemplo si los strings tienen igual longitud, ordenarlos alfabéticamente */
+
+['hola', 'adios', 'bootcamp', 'demo'].sort((a,b) => {
+    // comparación de longitudes (1er criterio)
+    if(a.length-b.length !== 0) return a.length-b.length;
+    // si las longitudes son iguales utilizo el segundo criterio
+    // que es orden alfabético
+    if(a<b) return -1;
+    if(a>b) return 1;
+    return 0;
+});
+
+```
