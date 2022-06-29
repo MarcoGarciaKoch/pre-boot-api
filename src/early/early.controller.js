@@ -24,7 +24,7 @@ export const registerEarlyStudent = async (req, res) => {
             await req.app.locals.ddbbClient.earlyStudentsCol.insertOne({ ...req.body, token});
             //step 4
             // Be aware, host is our react app
-            sendInviteEmail(req.body.email, `http://localhost:8100/register?token=${token}`);
+            sendInviteEmail(req.body.email, `${process.env.FRONT_APP_URL}/register?token=${token}`);
             res.sendStatus(201);
         }else {
             // send error 409(conflict) because user already exists on DDBB.
