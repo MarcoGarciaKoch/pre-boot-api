@@ -52,9 +52,12 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
                 $addToSet: {'chat.usersConected': email},
             };
             await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateDoc);
-            const chatOptions = { projection: {_id:0, chat:1} }
+            const chatOptions = { projection: {_id:0, chat:1, students: 1} }
             const chat = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, chatOptions);
-            return chat; // return all the users connected and messages together in the same object
+            const usrQuery = { "email": { "$in": chat.students } };
+            const usrOptions = { projection: {_id:0, email:1, name: 1, lastname: 1, avatar: 1} }
+            const usersInfo =  await app.locals.ddbbClient.usersCol.find(usrQuery, usrOptions).toArray();
+            return {...chat, users: usersInfo}; // return all the users connected and messages together in the same object
         }catch(err) {
             console.error(err);
             return 500;
@@ -73,9 +76,12 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
                     $push: {'chat.messages': {userEmail:messageDetails.email, message:messageDetails.body, type:'superchat'}},
                 };
                 await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateDoc);
-                const chatOptions = { projection: {_id:0, chat:1} }
+                const chatOptions = { projection: {_id:0, chat:1, students: 1} }
                 const chat = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, chatOptions);
-                return chat; // return all the users connected and messages together in the same object
+                const usrQuery = { "email": { "$in": chat.students } };
+                const usrOptions = { projection: {_id:0, email:1, name: 1, lastname: 1, avatar: 1} }
+                const usersInfo =  await app.locals.ddbbClient.usersCol.find(usrQuery, usrOptions).toArray();
+                return {...chat, users: usersInfo}; //  // return all the users connected and messages together in the same object
             }catch(err) {
                 console.error(err);
                 return 500;
