@@ -87,15 +87,23 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
 
       socket.on('disconnect', async () => {
         console.log('user disconnected');
-        const userData = await app.locals.ddbbClient.usersCol.findOne({socketId: app.locals.socketId})
-        console.log('userData', userData)
+        try{
+            const userData = await app.locals.ddbbClient.usersCol.findOne({socketId: app.locals.socketId})
+            console.log('userData', userData)
 
+            const o_id = ObjectId(app.locals.course); 
+            const updateUserConnectedList = {
+                $pull: {'chat.usersConected': app.locals.email },
+            };
+            await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateUserConnectedList);
+        }catch{
+            console.error(err);
+            return 500;
+        }
         const o_id = ObjectId(app.locals.course);
-        console.log('email',app.locals.email) 
-        const updateUserConnectedList = {
-            $pull: {'chat.usersConected': app.locals.email },
-        };
-        await app.locals.ddbbClient.coursesCol.updateOne({_id: o_id}, updateUserConnectedList);
+        const userListOptions = { projection: {_id:0, 'chat.usersConected':1} };
+        const userConectedList = await app.locals.ddbbClient.coursesCol.findOne({_id: o_id}, userListOptions);
+        io.emit('user conected list', userConectedList) // Send user connected lis updated to all connected users
       })
 })
 
