@@ -112,21 +112,3 @@ io.on('connection', async (socket) => { // funcion que se ejecuta cuando un usua
         io.emit('user conected list', userConectedList) // Send user connected lis updated to all connected users
       })
 })
-
-
-app.get('/hello', (_req,res) => {
-    res.send(`Hello World desde express: ${process.env.DEMO_MY_VAR}`);
-})
-
-// app.get('/demo',(req,res,next) => {
-//     const cumpleValidacion = true;
-//     if(!cumpleValidacion){
-//         res.status(400).send(); // envio un 400
-//         // ya no se ejecuta nada mas se termina la peticion
-//     }else{
-//         next(); // sirve para pasar el control al siguiente controlador registrado
-//     }
-    
-// }, (req, res) => {
-//     res.send('Hello demo');
-// })
