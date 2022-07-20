@@ -61,7 +61,7 @@ export const registerCtrl = async (req, res) => {
             await req.app.locals.ddbbClient.tokenCol.insertOne({token, user: req.body.email});
             //step 4
             // Be aware, host is our react app
-            sendValidationEmail(req.body.email, `http://localhost:8100/validate?token=${token}`);
+            sendValidationEmail(req.body.email, `${process.env.FRONT_APP_URL}/validate?token=${token}`);
             res.sendStatus(201);
         }else {
             // send error 409(conflict) because user already exists on DDBB.
